@@ -22,6 +22,7 @@ import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
+import { useModal } from '@/hooks/use-modal-store';
 
 type ChatItemProps = {
   id: string;
@@ -61,8 +62,7 @@ export const ChatItem = ({
   timestamp,
 }: ChatItemProps) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-
+  const { onOpen } = useModal();
   useEffect(() => {
     const handleKeyDown = (event: any) => {
       if (event.key === 'Escape' || event.keyCode === 27) {
@@ -221,7 +221,15 @@ export const ChatItem = ({
             </ActionTooltip>
           )}
           <ActionTooltip label="Delete">
-            <Trash className="cursor-pointer ml-auto w-4 h-4 text-zinc-500 hover:text-zinc-600 hover dark:hover:text-zinc-300 transition" />
+            <Trash
+              onClick={() =>
+                onOpen('deleteMessage', {
+                  apiUrl: `${socketUrl}/${id}`,
+                  query: socketQuery,
+                })
+              }
+              className="cursor-pointer ml-auto w-4 h-4 text-zinc-500 hover:text-zinc-600 hover dark:hover:text-zinc-300 transition"
+            />
           </ActionTooltip>
         </div>
       )}
